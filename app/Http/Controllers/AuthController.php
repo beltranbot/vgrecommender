@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\DTO\UserRegisterDTO;
 use App\Http\Requests\API\RegisterPostRequest;
 use App\Models\User;
-use App\Service\AuthService;
+use App\Services\AuthService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
