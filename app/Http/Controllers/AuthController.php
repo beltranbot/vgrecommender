@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\DTO\LoginPostRequestDTO;
 use App\DTO\UserRegisterDTO;
+use App\Http\Requests\API\LoginPostRequest;
 use App\Http\Requests\API\RegisterPostRequest;
-use App\Models\User;
 use App\Services\AuthService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -18,19 +18,11 @@ class AuthController extends Controller
         return response()->json($response, 201);
     }
 
-    public function login(Request $request)
+    public function login(LoginPostRequest $request)
     {
-        if (!Auth::attempt($request->only("email", "password"))) {
-            return response()->json([
-                "message" => "Invalid login details"
-            ], 401);
-        }
-        $user = User::where("email", $request["email"])->firstOrFail();
-        $token = $user->createToken("auth_token")->plainTextToken;
-        return response()->json([
-            "access_token" => $token,
-            "token_type" => "Bearer"
-        ]);
+        $dto = new LoginPostRequestDTO($request);
+        $response = AuthService::login($dto, "auth_token");
+        return response()->json($response["body"], $response["status"]);
     }
 
     public function info(Request $request)

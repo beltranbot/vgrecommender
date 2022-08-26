@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Services;
 
+use App\DTO\LoginPostRequestDTO;
 use App\DTO\UserRegisterDTO;
 use App\Models\User;
 use App\Services\AuthService;
@@ -45,5 +46,31 @@ class AuthServiceTest extends DBTestCase
         );
         $response = $this->get("/api/user");
         $response->assertOk();
+    }
+
+    /** @test */
+    public function should_login_user_with_valid_credentials()
+    {
+        $password = "supersecrepassword";
+        $user = User::factory()
+            ->with_password($password)
+            ->create();
+        $request = (object) [
+            "email" => $user->email,
+            "password" => $password,
+        ];
+        $dto = new LoginPostRequestDTO($request);
+        $response = AuthService::login($dto, "access_token");
+        $this->assertEquals(200, $response["status"]);
+        $this->assertArrayHasKey("body", $response);
+        $this->assertArrayHasKey("access_token", $response["body"]);
+        $this->assertArrayHasKey("token_type", $response["body"]);
+        $this->assertEquals("Bearer", $response["body"]["token_type"]);
+        $dbUser = User::first();
+        $token = $response["body"]["access_token"];
+        $token = explode("|", $token)[1];
+        $this->assertTrue(
+            hash_equals($dbUser->tokens[0]->token, hash("sha256", $token))
+        );
     }
 }

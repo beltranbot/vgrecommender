@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 /**
@@ -43,8 +44,13 @@ class UserFactory extends Factory
     public function with_random_password()
     {
         $password = fake()->regexify("^[a-zA-Z0-9]{32}$");
+        return $this->with_password($password);
+    }
+
+    public function with_password($password)
+    {
         return $this->state(function (array $attributes) use ($password) {
-            return ["password" => $password];
+            return ["password" => Hash::make($password)];
         });
     }
 }
