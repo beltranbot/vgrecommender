@@ -23,5 +23,6 @@ class DatabaseSeeder extends Seeder
 
         $this->call(GameCategorySeeder::class);
         $this->call(GameModeSeeder::class);
+        $this->call(GameGenreSeeder::class);
     }
 }
