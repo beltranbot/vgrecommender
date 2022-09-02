@@ -25,5 +25,6 @@ class DatabaseSeeder extends Seeder
         $this->call(GameModeSeeder::class);
         $this->call(GameGenreSeeder::class);
         $this->call(PlatformCategorySeeder::class);
+        $this->call(RegionSeeder::class);
     }
 }
