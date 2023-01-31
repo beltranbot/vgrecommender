@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\DTO\PostListDTO;
+use App\DTO\PutListDTO;
 use App\Models\ListModel;
 use App\Models\User;
 
@@ -24,5 +25,12 @@ class ListService
     {
         $lists = ListModel::getByUser($user);
         return ["lists" => $lists];
+    }
+
+    public static function update(ListModel $list, PutListDTO $dto)
+    {
+        $list->fill($dto->asArray());
+        $list->save();
+        return ["list" => $list];
     }
 }

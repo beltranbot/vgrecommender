@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\DTO\PostListDTO;
+use App\DTO\PutListDTO;
 use App\Http\Requests\PostListRequest;
+use App\Http\Requests\PutListRequest;
+use App\Models\ListModel;
 use App\Models\User;
 use App\Services\ListService;
 use Illuminate\Http\Request;
@@ -28,5 +31,12 @@ class ListController extends Controller
         }
         $response = ListService::getByUser($authUser);
         return response()->json($response, 200);
+    }
+
+    public function update(PutListRequest $request, ListModel $list)
+    {
+        $dto = new PutListDTO($request);
+        $response = ListService::update($list, $dto);
+        return response($response, 200);
     }
 }

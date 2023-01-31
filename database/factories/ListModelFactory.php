@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\ListModel;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -20,6 +21,7 @@ class ListModelFactory extends Factory
         return [
             "user_id" => null,
             "name" => fake()->regexify("^[a-zA-Z0-9]{32}$"),
+            "position" => 0,
             "description" => fake()->regexify("^[a-zA-Z0-9]{32}$")
         ];
     }
@@ -34,6 +36,15 @@ class ListModelFactory extends Factory
     {
         return $this->state(function (array $attributes) use ($user) {
             return ["user_id" => $user->id];
+        });
+    }
+
+    public function with_next_position($user)
+    {
+        $position = ListModel::getMaxPositionByUser($user);
+        $position++;
+        return $this->state(function (array $attributes) use ($position) {
+            return ["position" => $position];
         });
     }
 }
